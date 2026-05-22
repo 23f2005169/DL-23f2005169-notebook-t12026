@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Music Genre Classification | Deep Learning Project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0b1120;
+      color: #f8fafc;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    .bg {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.25), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(168,85,247,0.22), transparent 30%),
+        #0b1120;
+    }
+
+    .container {
+      width: min(1200px, 92%);
+      margin: auto;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(10px);
+      background: rgba(11,17,32,0.75);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      z-index: 100;
+    }
+
+    .nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+    }
+
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #60a5fa;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: 0.3s;
+      font-size: 0.95rem;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .hero {
+      min-height: 95vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(96,165,250,0.15);
+      border: 1px solid rgba(96,165,250,0.4);
+      color: #93c5fd;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
+      font-weight: 800;
+    }
+
+    .gradient {
+      background: linear-gradient(90deg, #60a5fa, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: #cbd5e1;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      max-width: 650px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 0.9rem 1.4rem;
+      border-radius: 14px;
+      font-weight: 600;
+      transition: 0.3s ease;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+    }
+
+    .secondary {
+      border: 1px solid rgba(255,255,255,0.15);
+      color: white;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+    }
+
+    .hero-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      padding: 2rem;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .stat {
+      padding: 1.2rem;
+      background: rgba(255,255,255,0.04);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .stat h3 {
+      font-size: 1.8rem;
+      color: #60a5fa;
+      margin-bottom: 0.3rem;
+    }
+
+    section {
+      padding: 6rem 0;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      font-weight: 800;
+    }
+
+    .section-subtitle {
+      color: #94a3b8;
+      max-width: 800px;
+      margin-bottom: 3rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 2rem;
+      transition: 0.35s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(96,165,250,0.35);
+    }
+
+    .card h3 {
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      color: white;
+    }
+
+    .card p {
+      color: #cbd5e1;
+      font-size: 0.96rem;
+    }
+
+    .timeline {
+      border-left: 2px solid rgba(96,165,250,0.3);
+      margin-top: 2rem;
+      padding-left: 2rem;
+    }
+
+    .timeline-item {
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -2.65rem;
+      top: 0.2rem;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #60a5fa;
+      box-shadow: 0 0 20px #60a5fa;
+    }
+
+    .timeline-item h3 {
+      margin-bottom: 0.5rem;
+      color: white;
+    }
+
+    .timeline-item p {
+      color: #cbd5e1;
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .tech {
+      padding: 0.75rem 1.2rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #e2e8f0;
+      font-size: 0.95rem;
+    }
+
+    .highlight {
+      background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(168,85,247,0.12));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 30px;
+      padding: 3rem;
+      margin-top: 3rem;
+    }
+
+    .highlight ul {
+      margin-top: 1.5rem;
+      padding-left: 1.5rem;
+      color: #cbd5e1;
+    }
+
+    footer {
+      padding: 3rem 0;
+      text-align: center;
+      color: #94a3b8;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    @media(max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding-top: 3rem;
+      }
+
+      h1 {
+        font-size: 3rem;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+
+  <nav>
+    <div class="container nav-content">
+      <div class="logo">DL Music Genre Project</div>
+
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#pipeline">Pipeline</a>
+        <a href="#features">Features</a>
+        <a href="#tech">Tech Stack</a>
+        <a href="#results">Results</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="badge">Deep Learning • Audio AI • CNN</div>
+
+        <h1>
+          Music Genre
+          <span class="gradient">Classification</span>
+          Using Deep Learning
+        </h1>
+
+        <p>
+          An end-to-end deep learning pipeline for music genre classification built using PyTorch, audio feature extraction, synthetic data generation, and Convolutional Neural Networks. The project processes raw audio, creates augmented datasets, trains a CNN model, and performs inference on unseen songs.
+        </p>
+
+        <div class="buttons">
+          <a class="btn primary" href="https://github.com/23f2005169/DL-23f2005169-notebook-t12026" target="_blank">
+            View GitHub Repository
+          </a>
+
+          <a class="btn secondary" href="#overview">
+            Explore Project
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <h2 style="margin-bottom: 1rem; font-size: 1.7rem;">Project Snapshot</h2>
+
+        <p style="color:#cbd5e1;">
+          This project focuses on building a scalable and robust music genre recognition system using deep learning and audio signal processing techniques.
+        </p>
+
+        <div class="stats">
+          <div class="stat">
+            <h3>27K+</h3>
+            <p>Training Samples</p>
+          </div>
+
+          <div class="stat">
+            <h3>10+</h3>
+            <p>Music Genres</p>
+          </div>
+
+          <div class="stat">
+            <h3>2.49M</h3>
+            <p>Trainable Parameters</p>
+          </div>
+
+          <div class="stat">
+            <h3>CNN</h3>
+            <p>Deep Learning Model</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="overview">
+    <div class="container">
+      <h2 class="section-title">Project Overview</h2>
+
+      <p class="section-subtitle">
+        The objective of this project is to automatically identify the genre of a music track using machine learning and deep learning techniques. The pipeline combines feature extraction, dataset augmentation, synthetic mashups, and convolutional neural networks for robust classification performance.
+      </p>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Audio Feature Extraction</h3>
+          <p>
+            Extracts meaningful spectral representations from raw audio signals using mel spectrograms and preprocessing techniques suitable for CNN-based learning.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Data Augmentation</h3>
+          <p>
+            Improves model generalization by generating noisy audio variations and synthetic mashups to create a larger and more diverse training dataset.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Deep Learning Architecture</h3>
+          <p>
+            Uses a Convolutional Neural Network designed for audio spectrogram classification with efficient training and inference pipelines.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Inference Pipeline</h3>
+          <p>
+            Performs predictions on unseen music files and generates genre distributions using a trained deep learning model.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pipeline">
+    <div class="container">
+      <h2 class="section-title">Complete Workflow</h2>
+
+      <p class="section-subtitle">
+        The notebook implements a complete deep learning lifecycle starting from raw audio processing to deployment-ready inference.
+      </p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <h3>1. Raw Audio Collection</h3>
+          <p>
+            Music files are collected and organized genre-wise for preprocessing and training.
+          </p>
+        </div>
+
+        <div class="timeline-item">
+          <h3>2. Feature Extraction</h3>
+          <p>
+            Audio waveforms are transformed into mel spectrograms and structured tensors that can be consumed by neural networks.
+          </p>
+        </div>
+
+        <div class="timeline-item">
+          <h3>3. Synthetic Data Creation</h3>
+          <p>
+            Noise injection and mashup generation techniques are used to create a more robust dataset capable of handling real-world variations.
+          </p>
+        </div>
+
+        <div class="timeline-item">
+          <h3>4. CNN Training</h3>
+          <p>
+            A convolutional neural network is trained on the processed spectrogram data using PyTorch.
+          </p>
+        </div>
+
+        <div class="timeline-item">
+          <h3>5. Validation & Evaluation</h3>
+          <p>
+            Model performance is validated using train-validation splits and genre distribution analysis.
+          </p>
+        </div>
+
+        <div class="timeline-item">
+          <h3>6. Inference</h3>
+          <p>
+            The trained model predicts genres for unseen songs and outputs final predictions efficiently on GPU hardware.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="container">
+      <h2 class="section-title">Key Features</h2>
+
+      <p class="section-subtitle">
+        Important technical highlights implemented in this project.
+      </p>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Custom Audio Processing</h3>
+          <p>
+            Handles waveform slicing, multi-crop extraction, and spectrogram generation for improved feature quality.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Noise Injection</h3>
+          <p>
+            Simulates real-world audio imperfections and improves the model's ability to generalize.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Synthetic Mashups</h3>
+          <p>
+            Generates hybrid audio samples to increase training diversity and improve robustness.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>GPU Accelerated Training</h3>
+          <p>
+            Utilizes CUDA-enabled GPUs for faster training and large-scale inference.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>PyTorch Dataloader Pipeline</h3>
+          <p>
+            Efficient dataset handling and batching for scalable model training.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Scalable Architecture</h3>
+          <p>
+            The modular structure allows future extension into music recommendation systems or streaming applications.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tech">
+    <div class="container">
+      <h2 class="section-title">Technology Stack</h2>
+
+      <p class="section-subtitle">
+        Libraries, frameworks, and technologies used to build the project.
+      </p>
+
+      <div class="tech-stack">
+        <div class="tech">Python</div>
+        <div class="tech">PyTorch</div>
+        <div class="tech">NumPy</div>
+        <div class="tech">Pandas</div>
+        <div class="tech">Librosa</div>
+        <div class="tech">Matplotlib</div>
+        <div class="tech">CUDA / GPU</div>
+        <div class="tech">Jupyter Notebook</div>
+        <div class="tech">Deep Learning</div>
+        <div class="tech">Audio Signal Processing</div>
+      </div>
+
+      <div class="highlight">
+        <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">
+          Why This Project Stands Out
+        </h3>
+
+        <p style="color:#cbd5e1;">
+          Instead of only training on clean datasets, this project focuses heavily on dataset robustness and augmentation strategies. The use of synthetic mashups and injected noise makes the pipeline significantly more realistic and production-oriented.
+        </p>
+
+        <ul>
+          <li>End-to-end ML workflow implementation</li>
+          <li>Real-world data augmentation strategies</li>
+          <li>Custom CNN pipeline for audio intelligence</li>
+          <li>GPU-based large-scale inference</li>
+          <li>Scalable and modular notebook structure</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="results">
+    <div class="container">
+      <h2 class="section-title">Results & Outcomes</h2>
+
+      <p class="section-subtitle">
+        The project successfully builds a working music genre classification system capable of processing thousands of audio files efficiently.
+      </p>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Large-Scale Dataset</h3>
+          <p>
+            Expanded dataset generation resulted in tens of thousands of training samples for improved deep learning performance.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Efficient Inference</h3>
+          <p>
+            The final trained CNN model performs high-speed inference on GPU hardware for practical usability.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Robust Predictions</h3>
+          <p>
+            Genre distributions generated during inference demonstrate successful classification capabilities across multiple genres.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="highlight" style="text-align:center;">
+        <h2 style="font-size:2.4rem; margin-bottom:1rem;">
+          Explore The Full Project
+        </h2>
+
+        <p style="max-width:800px; margin:auto; color:#cbd5e1; margin-bottom:2rem;">
+          This repository contains the full notebook implementation, preprocessing pipeline, CNN training workflow, and inference system for music genre classification.
+        </p>
+
+        <a class="btn primary" href="https://github.com/23f2005169/DL-23f2005169-notebook-t12026" target="_blank">
+          Open GitHub Repository
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>
+        Built for showcasing deep learning, audio intelligence, and end-to-end machine learning engineering skills.
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
